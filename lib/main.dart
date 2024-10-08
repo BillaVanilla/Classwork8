@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -103,32 +104,117 @@ void winitem() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-       
-        title: Text(widget.title),
+        title: const Text('Spooky Halloween Game'),
       ),
-      body: Center(
-       
-        child: Column(
-         
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: Stack(
+        children: [
+           Positioned.fill(
+             child: Image.asset(
+              'assets/spookcastle.jpg',
+              fit: BoxFit.cover,
+             ),
+           ),
+             // Animated Characters Lcoation
+          animatedCharacter1('assets/zombie1.png', 0.03),
+          animatedCharacter2('assets/zombie2.png', 0.054),
+          animatedCharacter3('assets/zombie3.png', 0.05),
+           // Hidden Winning Element
+          Positioned(
+          top: 200,
+          left: 150,
+          child: GestureDetector(
+            onTap: isGameOver ? null : winitem,
+              child: Image.asset('assets/closed closet.png', width: 60),  // Hidden closet location
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+          ),
+           // Trap Child
+          Positioned(
+             top: 400,
+            left: 100,
+            child: GestureDetector(
+            onTap: isGameOver ? null : playtrapsound,
+            child: Image.asset('assets/cardboard box.png', width: 80),  // Cardboard box trap
             ),
-          ],
-        ),
+          ),
+          // Message Display and Reset Button
+          if (shownmessage)
+          Center(
+            child: Column(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: [
+                 Container(
+                  padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 236, 10, 10).withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                     child: Text(
+                        message,
+                        style: const TextStyle(
+                        color: Colors.orange,
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        ),
+                     ),
+                  ),
+                  const SizedBox(height: 20),
+                   ElevatedButton(
+                    onPressed: resetGame,
+                    child: const Text("Play Again"),
+                   ),
+               ],
+            ),
+           ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+  );}
+
+  // Zombie1
+  Widget animatedCharacter1(String imagePath, double startPosition) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        double randomPosition = Random().nextDouble() * MediaQuery.of(context).size.width;
+        return Positioned(
+          top: (startPosition + controller.value) * MediaQuery.of(context).size.height,
+          right: randomPosition,
+          child: child!,
+        );
+      },
+      child: Image.asset(imagePath, width: 80),
+    );
+  }
+
+  //Zombie2
+  Widget animatedCharacter2(String imagePath, double startPosition) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        double randomPosition = Random().nextDouble() * MediaQuery.of(context).size.width;
+        return Positioned(
+          top: (startPosition + controller.value) * MediaQuery.of(context).size.height,
+          left: randomPosition,
+          child: child!,
+        );
+      },
+      child: Image.asset(imagePath, width: 120),
+    );
+  }
+
+  //Zombie3
+   Widget animatedCharacter3(String imagePath, double startPosition) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        double randomPosition = Random().nextDouble() * MediaQuery.of(context).size.width;
+        return Positioned(
+          top: (startPosition + controller.value) * MediaQuery.of(context).size.height,
+          left: randomPosition,
+          child: child!,
+        );
+      },
+      child: Image.asset(imagePath, width: 100),
     );
   }
 }
